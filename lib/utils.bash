@@ -25,7 +25,7 @@ sort_versions() {
 
 list_all_versions() {
   curl "${curl_opts[@]}" --url "$GH_RELEASES" |
-    grep -oE "tag_name\": *\".{1,15}\"," | sed -e 's/tag_name\": \"v*//' -e 's/\",//' || fail "Could not fetch versions"
+    grep -oE "tag_name\": *\".{1,15}\"," | sed -e 's/tag_name\": \"//' -e 's/\",//' || fail "Could not fetch versions"
 }
 
 get_platform() {
@@ -98,7 +98,7 @@ install_version() {
     fail "asdf-${TOOL_NAME} supports release installs only"
   fi
 
-  ( 
+  (
     mkdir -p "$install_path"
     cp -r "$ASDF_DOWNLOAD_PATH"/* "$install_path"
     local tool_cmd

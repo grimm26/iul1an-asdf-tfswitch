@@ -80,6 +80,21 @@ download_release() {
   platform="$(get_platform)"
   arch="$(get_arch)"
 
+  if [[ $version != v* ]]; then
+    # For v1.1.0 and up, tfswitch versions have a v prefix.
+    # We have to account for that here since mise strips them.
+    local IFS=.
+    local split_version=($version)
+    echo "checking ${split_version[0]}"
+    if [[ ${split_version[0]} -eq 1 ]]; then
+      if [[ ${split_version[1]} -ge 1 ]]; then
+        version="v${version}"
+      fi
+    elif [[ ${split_version[0]} -ge 2 ]]; then
+      version="v${version}"
+    fi
+  fi
+
   url="${GH_REPO}/releases/download/${version}/terraform-switcher_${version}_${platform}_${arch}.tar.gz"
   echo "* Downloading ${TOOL_NAME} release ${version}..."
   curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download ${url}"
